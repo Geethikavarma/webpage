@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My BucketList</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .input-container input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .input-container button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input-container button:hover {
+            background-color: #45a049;
+        }
+
+        .checklist-container {
+            margin-top: 20px;
+        }
+
+        .checklist {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            margin: 10px 0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .show-data {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .show-data:hover {
+            background-color: #45a049;
+        }
+
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .show-data {
+                padding: 12px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Task Checklist</h1>
+        
+        <div class="input-container">
+            <input type="text" id="taskInput" placeholder="Enter tasks separated by commas" />
+            <button onclick="addTasks()">Add Tasks</button>
+        </div>
+        
+        <div class="checklist-container">
+            <ul id="checklist" class="checklist">
+                <!-- Checklist items will appear here -->
+            </ul>
+        </div>
+
+        <div class="button-container">
+            <button class="show-data" onclick="showData()">Show Data</button>
+        </div>
+
+        <div id="output" class="output">
+            <!-- Display selected items here -->
+        </div>
+    </div>
+
+    <script>
+        // Array to hold all tasks
+        let tasksArray = [];
+
+        function addTasks() {
+            // Get the input value and split by commas
+            const input = document.getElementById('taskInput').value;
+            const newTasks = input.split(',');
+
+            // Add tasks to the global tasksArray
+            tasksArray = tasksArray.concat(newTasks.map(task => task.trim()));
+
+            // Clear the input field
+            document.getElementById('taskInput').value = '';
+
+            // Call createChecklist to update the displayed checklist
+            createChecklist();
+        }
+
+        function createChecklist() {
+            // Clear previous checklist
+            const checklistContainer = document.getElementById('checklist');
+            checklistContainer.innerHTML = '';
+
+            // Create a new checkbox list from the tasksArray
+            tasksArray.forEach((task, index) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<input type="checkbox" id="task${index}"> ${task}`;
+                checklistContainer.appendChild(listItem);
+            });
+        }
+
+        function showData() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            let completedTasks = [];
+            let incompleteTasks = [];
+
+            // Loop through the checkboxes and categorize checked and unchecked items
+            checkboxes.forEach((checkbox, index) => {
+                const taskName = tasksArray[index];
+                if (checkbox.checked) {
+                    completedTasks.push(taskName);
+                } else {
+                    incompleteTasks.push(taskName);
+                }
+            });
+
+            // Display the results
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = `<h3>Completed Tasks:</h3><p>${completedTasks.length > 0 ? completedTasks.join(', ') : 'None'}</p>
+                                    <h3>Incomplete Tasks:</h3><p>${incompleteTasks.length > 0 ? incompleteTasks.join(', ') : 'None'}</p>`;
+        }
+    </script>
+
+</body>
+</html>
